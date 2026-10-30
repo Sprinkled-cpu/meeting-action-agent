@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: meeting-action-api
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_ENV=production
+      - LOG_LEVEL=INFO
+      - DEFAULT_LLM_PROVIDER=${DEFAULT_LLM_PROVIDER:-mock}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+    command: ["uvicorn", "meeting_action_agent.api.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+  web-ui:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: meeting-action-ui
+    ports:
+      - "8501:8501"
+    environment:
+      - APP_ENV=production
+      - API_URL=http://api:8000
+    command: ["streamlit", "run", "web/app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped

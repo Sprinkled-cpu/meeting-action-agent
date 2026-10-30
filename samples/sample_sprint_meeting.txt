@@ -1,0 +1,69 @@
+[Meeting: Project Aurora - Sprint 14 Launch Alignment & Auth Migration]
+[Date: October 30, 2026 | 10:00 AM - 10:45 AM EST]
+[Attendees: Sarah Chen (VP of Product), David Miller (Principal Architect), Elena Rostova (Frontend Lead), Marcus Vance (Security & DevOps Lead)]
+
+[10:00:15] Sarah Chen: Good morning team, thanks for hopping on. We have four core topics today: the v2 OAuth auth migration, staging timeline for marketing, mobile biometric rollout order, and the pending security scan. Let's start with the authentication migration. David, where are we on the database schema?
+
+[10:01:42] David Miller: Morning. The user session schema redesign is about 85% done. We agreed last week to drop legacy v1 session tokens. To finalize this, I will deliver the complete PostgreSQL schema migration script by Wednesday, November 5th at 12:00 PM EST.
+
+[10:02:30] Sarah Chen: Perfect. Elena, frontend dependencies?
+
+[10:03:05] Elena Rostova: We need David's schema changes to finalize the token refresh flow. Once that's ready, I will implement the OAuth2 callback handler and Google/GitHub login components in React. My commitment is to have the frontend components finished and tested by Friday, November 7th at 5:00 PM EST.
+
+[10:04:15] Sarah Chen: Great. Now on API deprecation: we received feedback from sales about customers still on v1 static API keys. Do we keep supporting v1 for six months or cut off sooner?
+
+[10:05:40] David Miller: Keeping v1 active poses a significant security liability with the new auth gateway. 
+
+[10:06:10] Marcus Vance: Strongly agree with David. Dual-stack token validation doubles our maintenance overhead and attack surface.
+
+[10:06:45] Sarah Chen: Understood. Let's make the executive call right now: Decision is that we will deprecate all API v1 static keys on November 15, 2026. All clients must adopt v2 Bearer tokens by then. No exceptions for non-enterprise tiers.
+
+[10:07:30] Elena Rostova: Question on that, Sarah: What about enterprise SSO customers on custom Okta integrations? Are they grandfathered into the legacy 30-day session expiry, or are they forced to conform to the new 8-hour token rotation rule?
+
+[10:08:15] Sarah Chen: That's a critical point. I don't know the exact legal SLA on enterprise session retention off the top of my head. Let's mark that down as open—we need to verify with legal and enterprise support before we mandate the 8-hour cutoff for tier-1 accounts.
+
+[10:09:00] Marcus Vance: I can take an action item to sync with Enterprise Support on Thursday afternoon to clarify the enterprise Okta token SLA.
+
+[10:09:40] Sarah Chen: Thanks Marcus. What about the mobile biometric authentication launch? Do we ship iOS and Android simultaneously, or phased?
+
+[10:10:20] Elena Rostova: iOS FaceID/TouchID integration is already passing QA, but Android BiometricPrompt has edge cases on Samsung OneUI devices.
+
+[10:11:00] Sarah Chen: Alright, decision made: We will roll out biometric login on iOS first in release 14.1, and defer the Android biometric update to release 14.2 once QA gives the green light.
+
+[10:11:45] Marcus Vance: On infrastructure, I will set up the Redis rate-limiting rules on the /auth/token endpoint to prevent brute-force attacks. I will have that deployed and configured in staging by Thursday, November 6th at 3:00 PM EST.
+
+[10:13:00] David Miller: One follow-up for me: before we review the database performance on Monday, I will run load benchmarks on PostgreSQL write latency under 10,000 concurrent login bursts.
+
+[10:14:10] Sarah Chen: Excellent. Now onto the staging environment and marketing press demo. This is high priority: Marketing has a press briefing demo scheduled for Thursday afternoon. So we need the backend staging build completely deployed and stable by Thursday, November 6th at 2:00 PM EST. Marketing must have a clean environment to record promo assets.
+
+[10:20:45] Marcus Vance: Wait a second Sarah—our automated security penetration scan and compliance verification window starts Thursday morning and runs through Friday at 4:00 PM. We have a company-wide freeze policy: no staging deployments are permitted until the security audit finishes and clears on Friday, November 7th at 4:00 PM EST. A deployment on Thursday afternoon will invalidate the scan and violate protocol.
+
+[10:23:10] David Miller: Yeah, deploying on Thursday during the audit could disrupt active test sessions and corrupt log states.
+
+[10:24:00] Sarah Chen: Hmm, we can't miss the marketing deadline, but we cannot violate security policy either. We didn't resolve this conflict today. We need to escalate to leadership or reschedule marketing.
+
+[10:26:15] Marcus Vance: Another open compliance question: Do we need a formal SOC2 external re-certification if we swap our encryption key management service over to AWS KMS before December, or does our existing SOC2 Type II report cover that change?
+
+[10:27:00] Sarah Chen: Good question. We need our compliance auditor to answer that. Let's log it as unresolved.
+
+[10:28:10] David Miller: By the way, someone on ops or backend should probably purge the orphan test records and stale session rows from the staging database before we run any migration.
+
+[10:28:45] Elena Rostova: I don't have database write permissions in staging.
+
+[10:29:10] David Miller: Yeah, no worries, someone can just grab it whenever they get a chance or have some spare bandwidth.
+
+[10:30:00] Sarah Chen: Also, looking ahead, maybe we can revamp the user profile settings UI with the new Tailwind theme if someone has a couple spare hours this sprint?
+
+[10:30:35] Elena Rostova: Is that officially in scope for Sprint 14? Our frontend sprint capacity is already at 95% with the OAuth callback flow.
+
+[10:31:10] Sarah Chen: Let's keep it fluid. We'll see how Sprint 14 shakes out and decide later if anyone happens to have extra capacity.
+
+[10:32:00] David Miller: One administrative note: our Monday 9:00 AM engineering sync is constantly clashing with company standup. Can we shift it?
+
+[10:32:30] Elena Rostova: Tuesday 10:00 AM works much better for frontend.
+
+[10:32:50] Marcus Vance: Works for security too.
+
+[10:33:10] Sarah Chen: Agreed. Decision: Moving the weekly engineering sync permanently to Tuesdays at 10:00 AM EST starting next week.
+
+[10:34:00] Sarah Chen: Alright, that wraps it up. Marcus, David, Elena, thanks for the hard work. Let's make sure everyone syncs up asynchronously on Slack.

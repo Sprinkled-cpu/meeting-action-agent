@@ -1,0 +1,16 @@
+WEBVTT
+
+00:00:15.100 --> 00:00:20.400
+<v Sarah Chen>Good morning team. Today we decide on the v1 API deprecation.</v>
+
+00:00:21.000 --> 00:00:28.000
+<v David Miller>I will deliver the database schema migration by Wednesday, November 5 at noon.</v>
+
+00:00:29.000 --> 00:00:35.000
+<v Elena Rostova>I will finish the frontend React components by Friday, November 7 at 5 PM.</v>
+
+00:00:36.000 --> 00:00:44.000
+<v Sarah Chen>We need the staging build deployed by Thursday at 2 PM for Marketing demo.</v>
+
+00:00:45.000 --> 00:00:54.000
+<v Marcus Vance>Wait Sarah, we have a security freeze policy: no staging deployments permitted until Friday 4 PM.</v>
